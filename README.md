@@ -14,3 +14,10 @@ Once you have the database config file set up, you can run the program from the 
 ```ruby analyze.rb```
 
 Type a question id to view the partial values of each step. Type q to quit the program (or just ctrl+c).
+
+Sinatra app
+-----------
+A barebones web app for more easily browsing through the data set.
+1. ```bundle```
+2. ```rackup config.ru```
+3. open up your browser to localhost:9292

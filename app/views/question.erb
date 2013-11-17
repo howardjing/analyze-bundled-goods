@@ -1,0 +1,17 @@
+<div class="breadcrumb">
+  <a href="/">all users</a> << 
+  <a href="/users/<%= @question.user_id %>">user <%= @question.user_id %></a>
+</div>
+
+<h1>Analyzing question <%= @question.id %></h1>
+
+<h3>Interactions</h3>
+(<%= @question.menu_items.count %> menu items, <%= @question.answers.count %> goods)
+<ul>
+  <% @question.interactions.each do |interaction| %>
+    <li><%= format_time interaction.created_at %>: <%= interaction.content %></li>
+  <% end %>
+</ul>
+
+<h3>Partial Values</h3>
+<%= @question.partial_values %>

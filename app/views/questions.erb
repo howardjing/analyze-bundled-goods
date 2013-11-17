@@ -1,0 +1,19 @@
+<div class="breadcrumb">
+  <a href="/">all users</a>
+</div>
+
+<h1>Questions by user <%= @user.id %></h1>
+<div>Experiment began: <%= format_date @user.created_at %></div>
+<% @questions.each do |question| %>
+  <div>
+    <ul>
+      <li>id: <%= question.id %></li>
+      <li>number: <%= question.number %></li>
+      <li>start: <%= format_time question.time_started %></li>
+      <li>
+        interactions count: <%= question.interactions.count %> 
+        (<%= question.menu_items.count %> menu items, <%= question.answers.count %> goods)</li>
+      <li><a href="/questions/<%= question.id %>">analyze</a></li>
+    </ul>
+  </div>
+<% end %>

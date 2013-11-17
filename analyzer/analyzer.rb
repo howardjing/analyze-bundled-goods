@@ -20,6 +20,10 @@ end
 
 class Question < Sequel::Model
 
+  def number
+    DB[:instructions].where(id: instruction_id).get(:number)
+  end
+
   def interactions
     Interaction.where(question_id: id).order(Sequel.asc(:created_at))
   end
@@ -36,6 +40,10 @@ class Question < Sequel::Model
     JSON.parse(self[:effects])
   end
 
+  def menu_items
+    interactions.menu_items
+  end
+
   def answers
     interactions.answers
   end
@@ -46,7 +54,8 @@ class Question < Sequel::Model
     answers.each do |answer|
       if answer.combo?
         active_goods = {} # reset active goods
-        values.push(combo_value)
+        value = answer.selected? ? combo_value : 0
+        values.push(value)
       elsif answer.good?
         active_goods[answer.good_number] = answer.selected?
         values.push(bundle_value active_goods)
@@ -129,31 +138,3 @@ class Interaction < Sequel::Model(:question_stats)
     content.split(' ', 2).first
   end
 end
-
-# puts Interaction.count
-# puts Interaction.menu_items.count
-# puts Interaction.goods.count
-# puts Interaction.goods.first.content
-# puts Interaction.combos.count
-# puts Interaction.combos.first.content
-# puts Interaction.menu_items.count + Interaction.goods.count + Interaction.combos.count
-# puts Interaction.goods.count + Interaction.combos.count
-# puts Interaction.answers.count
-
-# puts '==='
-# puts Interaction.selected_goods.count + Interaction.deselected_goods.count
-# puts "vs #{Interaction.goods.count}"
-# puts Interaction.selected_combos.count + Interaction.deselected_combos.count
-# puts "vs #{Interaction.combos.count}"
-
-
-# puts 'quesitons'
-# puts Question.count
-# puts "interactions: #{User.last.questions.last.interactions.count}"
-# puts "menu items: #{User.last.questions.last.menu_items.count}"
-# puts "answers: #{User.last.questions.last.answers.count}"
-# puts "combos: #{User.last.questions.last.combos.count}"
-# puts "goods: #{User.last.questions.last.goods.count}"
-
-
-# select count(*) from question_stats where question_id = 222 and (content like 'Good%' or content like 'Combo%')
