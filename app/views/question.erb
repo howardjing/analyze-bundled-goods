@@ -57,9 +57,14 @@
       // Create the data table.
       var data = new google.visualization.DataTable();
       data.addColumn('datetime', 'Time');
-      data.addColumn('number', 'Value');
+      data.addColumn('number', 'In Search Set');
+      data.addColumn('number', 'Not In Search Set');
       choices.forEach(function(choice) {
-        data.addRow([choice.time, choice.value]);
+        data.addRow(
+          [ choice.time, 
+            choice.in_search_set ? choice.value : null, 
+            choice.in_search_set ? null : choice.value
+          ]);
       });
 
 
