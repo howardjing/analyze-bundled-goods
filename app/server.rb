@@ -18,6 +18,10 @@ get '/questions/:id' do |id|
 end
 
 helpers do
+  def h(text)
+    Rack::Utils.escape_html(text)
+  end
+
   def format_date(date)
     date.strftime('%A, %b %d %Y')
   end

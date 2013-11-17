@@ -5,6 +5,30 @@
 
 <h1>Analyzing question <%= @question.id %></h1>
 
+<h3>Menu</h3>
+<ul>
+  <% @question.values.each do |good, value| %>
+    <li>Good <%= good %> has a value of <%= value %></li>
+  <% end %>
+</ul>
+
+<ul>
+  <% @question.effects.each do |bundle, value| %>
+    <li>Bundle <%= bundle %> has a value of <%= value %></li>
+  <% end %>
+</ul>
+
+<h3>Partial Values</h3>
+  <table class="partial-values">
+    <% @question.partial_values.each do |v| %>
+      <tr>
+        <td><%= v.bundle %></td>
+        <td class="value"><%= v.value %></td>
+      </tr>
+    <% end %>
+  </table>
+
+  <div id="graph"></div>
 <h3>Interactions</h3>
 (<%= @question.menu_items.count %> menu items, <%= @question.answers.count %> goods)
 <ul>
@@ -13,5 +37,45 @@
   <% end %>
 </ul>
 
-<h3>Partial Values</h3>
-<%= @question.partial_values %>
+<div data-choices="<%= h @question.partial_values.to_json %>"></div>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  (function() {
+    var choices = JSON.parse(document.querySelector("[data-choices]").dataset.choices)
+      .map(function(choice) {
+        choice.time = new Date(choice.time);
+        return choice;
+      });
+
+    console.log(choices)
+
+    google.load('visualization', '1.0', {'packages':['corechart']});
+    google.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+      data.addColumn('datetime', 'Time');
+      data.addColumn('number', 'Value');
+      choices.forEach(function(choice) {
+        data.addRow([choice.time, choice.value]);
+      });
+
+
+      // Set chart options
+      var options = {
+        title:'Time vs Value',
+        hAxis: { title: 'Time' },
+        vAxis: { title: 'Value' }
+      };
+
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.ScatterChart(document.getElementById('graph'));
+      chart.draw(data, options);
+    }
+
+
+
+  })();
+</script>

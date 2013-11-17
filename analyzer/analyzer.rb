@@ -1,6 +1,8 @@
 require 'sequel'
 require 'yaml'
 require 'json'
+require 'set'
+require_relative './bundle'
 
 # === ugly database setup start ===
 database_config_file = File.expand_path('../../database.yml', __FILE__)
@@ -50,39 +52,26 @@ class Question < Sequel::Model
 
   def partial_values
     values = []
-    active_goods = {}
-    answers.each do |answer|
-      if answer.combo?
-        active_goods = {} # reset active goods
-        value = answer.selected? ? combo_value : 0
-        values.push(value)
-      elsif answer.good?
-        active_goods[answer.good_number] = answer.selected?
-        values.push(bundle_value active_goods)
+    active_goods = Set.new
+    search_set = Set.new
+    interactions.each do |interaction|
+      if interaction.menu_item?
+        search_set.add(interaction.bundle)
+      elsif interaction.combo?
+        active_goods = Set.new # reset active goods
+        values.push(Bundle::Combo.new(self, interaction, search_set))
+      elsif interaction.good?
+        if interaction.selected?
+          active_goods.add(interaction.good_number)
+        else
+          active_goods.delete(interaction.good_number)
+        end
+        values.push(Bundle::Goods.new(self, interaction, active_goods, search_set))
       else
         raise "Programming error: question_stat #{answer.id} is neither combo or good"
       end
     end
     values
-  end
-
-  private
-
-  def combo_value
-    values.values.reduce(1, :+) + effects[goods.to_s]
-  end
-
-  def bundle_value(active_goods)
-    chosen_bundle = chosen_bundle(active_goods)
-    (effects[chosen_bundle.to_s] || 0) + chosen_bundle.map{ |good| values[good.to_s] }.reduce(0, :+)
-  end
-
-  def chosen_bundle(active_goods)
-    bundle = []
-    active_goods.each do |k,v|
-      bundle.push(k.to_i) if v
-    end
-    bundle.sort
   end
 end
 
@@ -112,6 +101,10 @@ class Interaction < Sequel::Model(:question_stats)
     end
   end
 
+  def menu_item?
+    type == 'Menu'
+  end
+
   def combo?
     type == 'Combo'
   end
@@ -128,6 +121,11 @@ class Interaction < Sequel::Model(:question_stats)
   def good_number
     return nil unless good?
     content.split(' ', 3)[1].to_i
+  end
+
+  # if interaction is a menu_item, find the bundle this interaction represents 
+  def bundle
+    content.split('bundle ').last.split(",").map(&:to_i).to_s
   end
 
   private
