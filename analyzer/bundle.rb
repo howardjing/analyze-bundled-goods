@@ -38,8 +38,8 @@ module Bundle
       @question  = question
       @created_at = interaction_good.created_at
       @active_goods = active_goods.clone
-      # if chosen_bundle has length 1, there are no bundle effects, is trivially in search set
-      @in_search_set = chosen_bundle.length == 1 ? true : search_set.include?(chosen_bundle.to_s)
+      # if chosen_bundle has <= length 1, there are no bundle effects, is trivially in search set
+      @in_search_set = chosen_bundle.length <= 1 ? true : search_set.include?(chosen_bundle.to_s)
     end
 
     def value
