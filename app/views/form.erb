@@ -1,0 +1,12 @@
+<form action="/questions/<%= question.id %>" method="post">
+  <div>
+    <label name="increasing">increasing?</label>
+    <input type="checkbox" name="increasing" <%= "checked" if question.increasing? %>>
+  </div>
+
+  <div class>
+    <label name="notes">notes</label><br>
+    <textarea name="notes"><%= question.notes %></textarea>
+  </div>
+  <button>save</button>
+</form>

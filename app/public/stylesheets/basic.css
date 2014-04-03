@@ -1,3 +1,8 @@
 table.partial-values .value {
   text-align: right;
 }
+
+textarea {
+  width: 400px;
+  height: 90px;
+}

@@ -1,5 +1,5 @@
 <div class="breadcrumb">
-  <a href="/">all users</a> << 
+  <a href="/">all users</a> <<
   <a href="/users/<%= @question.user_id %>">user <%= @question.user_id %></a>
 </div>
 
@@ -29,6 +29,10 @@
   </table>
 
   <div id="graph"></div>
+
+<h3>Analysis</h3>
+<%= erb :form, locals: { question: @question } %>
+
 <h3>Interactions</h3>
 (<%= @question.menu_items.count %> menu items, <%= @question.answers.count %> goods)
 <ul>
@@ -77,8 +81,8 @@
 
       choices.forEach(function(choice) {
         data.addRow(
-          [ choice.time, 
-            choice.in_search_set ? choice.value : null, 
+          [ choice.time,
+            choice.in_search_set ? choice.value : null,
             choice.bundle + " provides value " + choice.value + "\n" + "selected at " + formatTime(choice.time),
             choice.in_search_set ? null : choice.value,
             choice.bundle + " provides value " + choice.value + "\n" + "selected at " + formatTime(choice.time),

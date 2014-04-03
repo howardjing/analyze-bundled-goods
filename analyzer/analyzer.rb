@@ -30,6 +30,10 @@ class Question < Sequel::Model
     Interaction.where(question_id: id).order(Sequel.asc(:created_at))
   end
 
+  def increasing?
+    !!increasing
+  end
+
   def values
     JSON.parse(self[:values])
   end
@@ -123,7 +127,7 @@ class Interaction < Sequel::Model(:question_stats)
     content.split(' ', 3)[1].to_i
   end
 
-  # if interaction is a menu_item, find the bundle this interaction represents 
+  # if interaction is a menu_item, find the bundle this interaction represents
   def bundle
     content.split('bundle ').last.split(",").map(&:to_i).to_s
   end
