@@ -17,6 +17,15 @@ get '/questions/:id' do |id|
   erb :question
 end
 
+# update action
+post '/questions/:id' do |id|
+  @question = Question[id]
+  @question.increasing = params[:increasing] == "on"
+  @question.notes      = params[:notes]
+  @question.save
+  redirect "/questions/#{id}"
+end
+
 helpers do
   def h(text)
     Rack::Utils.escape_html(text)
