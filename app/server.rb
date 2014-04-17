@@ -36,6 +36,10 @@ helpers do
   end
 
   def format_time(time)
-    time.strftime('%I:%M:%S %p')
+    if time
+      time.strftime('%I:%M:%S %p')
+    else
+      "N/A"
+    end
   end
 end
