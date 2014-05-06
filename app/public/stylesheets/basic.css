@@ -6,3 +6,8 @@ textarea {
   width: 400px;
   height: 90px;
 }
+
+
+form.search-order-form {
+  margin-top: 20px;
+}

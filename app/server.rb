@@ -26,6 +26,13 @@ post '/questions/:id' do |id|
   redirect "/questions/#{id}"
 end
 
+post '/questions/:id/search_order' do |id|
+  @question = Question[id]
+  @question.search_order = params[:search_order]
+  @question.save
+  redirect "/questions/#{id}"
+end
+
 helpers do
   def h(text)
     Rack::Utils.escape_html(text)
